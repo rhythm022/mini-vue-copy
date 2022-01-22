@@ -1,3 +1,4 @@
+import { extend } from '../../shared'
 const objMap = new Map()
 
 let currentEffect
@@ -6,7 +7,9 @@ class ReactiveEffect{
     private _fn: any
     deps = []
     isRunning = true
-    constructor(fn,public scheduler?){
+    onStop?: () => void
+    scheduler?
+    constructor(fn){
         this._fn = fn
     }
 
@@ -23,6 +26,9 @@ class ReactiveEffect{
     stop(){ // run 的反操作
         if(this.isRunning){
             clearUpEffect(this)
+            if(this.onStop){
+                this.onStop()
+            }
             this.isRunning = false
         }
     }
@@ -66,8 +72,8 @@ export function trigger(obj,key) {
 }
 // effect函数的职责是调用fn，并在这个过程中让fn中每个响应式对象的每个属性都拥有 ReactiveEffect 对象
 export function effect(fn,options:any = {}){
-    const reactiveEffect = new ReactiveEffect(fn,options.scheduler)
-
+    const reactiveEffect = new ReactiveEffect(fn)
+    extend(reactiveEffect,options)
     reactiveEffect.run()
 
     // 将ReactiveEffect的run通过返回值暴露，调用run：
