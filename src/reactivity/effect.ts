@@ -4,14 +4,16 @@ let currentEffect
 
 class ReactiveEffect{
     private _fn: any
-    constructor(fn){
+    constructor(fn,public scheduler?){
         this._fn = fn
     }
 
     run(){
         currentEffect = this
-        this._fn()
+        const res = this._fn()
         currentEffect = null
+
+        return res
     }
 }
 
@@ -39,12 +41,22 @@ export function trigger(obj,key) {
     let keysMap = objMap.get(obj)
     let dep = keysMap.get(key)
     for(const effect of dep){
-        effect.run()
+        if(effect.scheduler){
+            effect.scheduler()// 有scheduler时，set对象属性时，就执行scheduler，不执行effect fn
+        }else{
+            effect.run()
+        }
     }
 }
 // effect函数的职责是调用fn，并在这个过程中让fn中每个响应式对象的每个属性都拥有 ReactiveEffect 对象
-export function effect(fn){
-    const _effect = new ReactiveEffect(fn)
+export function effect(fn,options:any = {}){
+    const _effect = new ReactiveEffect(fn,options.scheduler)
 
     _effect.run()
+
+    // 将ReactiveEffect的run通过返回值暴露，调用run：
+    // 可以用来执行 effect fn，
+    // 可以用来 track effect fn，
+    // 可以用来拿到 effect fn 的返回值
+    return _effect.run.bind(_effect)
 }

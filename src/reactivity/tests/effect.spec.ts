@@ -20,4 +20,47 @@ describe('effect', () => {
         user.age++
         expect(nextAge).toBe(12)
     })
+
+    it('should return runner when call effect',()=>{
+        let foo = 10
+        const runner = effect(()=>{
+            foo++
+            return 'foo'
+        })
+        expect(foo).toBe(11)
+
+        const r = runner()
+        expect(foo).toBe(12)
+        expect(r).toBe('foo')
+    })
+
+    it("scheduler", () => {
+        // 1. 通过 effect 的第二个参数给定的 一个 scheduler
+        // 2. effect 第一次执行时 还会执行 fn
+        // 3. 当响应式对象属性 set 时， 不执行 fn 而是执行scheduler
+        // 4. 只有当执行 runner 的时候，会执行 fn
+        let dummy
+        let run
+        const scheduler = jest.fn(() => {
+            run = runner
+        })
+        const obj = reactive({ foo: 1 })
+        const runner = effect(() => {
+            dummy = obj.foo
+        }, { scheduler })
+
+        // effect 执行，effect fn 不执行
+        expect(scheduler).not.toHaveBeenCalled()
+        expect(dummy).toBe(1)
+
+        // 对象属性 set 时，effect fn 不执行
+        obj.foo++
+        expect(scheduler).toBeCalledTimes(1)
+        expect(dummy).toBe(1)
+
+        // 调用 ReactiveEffect 的 run，effect fn 执行
+        run()
+        expect(dummy).toBe(2)
+
+    })
 });
