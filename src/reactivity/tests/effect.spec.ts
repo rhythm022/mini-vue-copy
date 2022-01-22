@@ -1,4 +1,4 @@
-import { effect } from "../effect";
+import { effect,stop} from "../effect";
 import { reactive } from "../reactive";
 
 describe('effect', () => {
@@ -11,27 +11,25 @@ describe('effect', () => {
 
         let nextAge
         effect(()=>{
-            nextAge = user.age + 1
+            nextAge = user.age
         })
+        expect(nextAge).toBe(10)
 
+        user.age++ // set
         expect(nextAge).toBe(11)
-
-        //update
-        user.age++
-        expect(nextAge).toBe(12)
     })
 
     it('should return runner when call effect',()=>{
         let foo = 10
         const runner = effect(()=>{
             foo++
-            return 'foo'
+            return 'answer'
         })
         expect(foo).toBe(11)
 
-        const r = runner()
+        const res = runner()// 手动执行
         expect(foo).toBe(12)
-        expect(r).toBe('foo')
+        expect(res).toBe('answer')
     })
 
     it("scheduler", () => {
@@ -54,7 +52,7 @@ describe('effect', () => {
         expect(dummy).toBe(1)
 
         // 对象属性 set 时，effect fn 不执行
-        obj.foo++
+        obj.foo++ // set
         expect(scheduler).toBeCalledTimes(1)
         expect(dummy).toBe(1)
 
