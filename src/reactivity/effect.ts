@@ -5,11 +5,14 @@ let currentEffect
 class ReactiveEffect{
     private _fn: any
     deps = []
+    isRunning = true
     constructor(fn,public scheduler?){
         this._fn = fn
     }
 
     run(){
+        this.isRunning = true
+
         currentEffect = this
         const res = this._fn()
         currentEffect = null
@@ -18,12 +21,18 @@ class ReactiveEffect{
     }
 
     stop(){ // run 的反操作
-        this.deps.forEach((dep:any)=>{
-            dep.delete(this)
-        })
+        if(this.isRunning){
+            clearUpEffect(this)
+            this.isRunning = false
+        }
     }
 }
 
+function clearUpEffect(effect){
+    effect.deps.forEach((dep:any)=>{
+        dep.delete(effect)
+    })
+}
 
 // track某个对象的某个属性
 // currentEffect === 当前正在执行的 ReactiveEffect
