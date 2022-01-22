@@ -1,4 +1,4 @@
-import { track } from "./effect"
+import { track,trigger } from "./effect"
 // reactive只是个没有自身行为的代理
 export function reactive(raw){
     return new Proxy(raw,{
@@ -13,7 +13,7 @@ export function reactive(raw){
         set(obj,key,value){
             const res = Reflect.set(obj,key,value)
 
-            // TODO 触发effect
+            trigger(obj,key)
             return res
         }
     })

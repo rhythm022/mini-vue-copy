@@ -19,6 +19,7 @@ class ReactiveEffect{
 // track某个对象的某个属性
 // currentEffect === 当前正在执行的 ReactiveEffect
 export function track(obj,key){
+    if(!currentEffect) return
     let keysMap = objMap.get(obj)
     if(!keysMap){
         keysMap = new Map()
@@ -34,7 +35,13 @@ export function track(obj,key){
 
 }
 
-
+export function trigger(obj,key) {
+    let keysMap = objMap.get(obj)
+    let dep = keysMap.get(key)
+    for(const effect of dep){
+        effect.run()
+    }
+}
 // effect函数的职责是调用fn，并在这个过程中让fn中每个响应式对象的每个属性都拥有 ReactiveEffect 对象
 export function effect(fn){
     const _effect = new ReactiveEffect(fn)
