@@ -61,4 +61,30 @@ describe('effect', () => {
         expect(dummy).toBe(2)
 
     })
+
+    it('stop',()=>{
+        let dummy
+        const obj = reactive({foo:1})
+        const runner = effect(()=>{
+            dummy = obj.foo
+        })
+
+        // set
+        obj.foo = 2
+        expect(dummy).toBe(2)
+
+        stop(runner)
+
+        // stop后set
+        obj.foo = 3
+        expect(dummy).toBe(2)
+
+        // run
+        runner();
+        expect(dummy).toBe(3)
+
+        // set
+        obj.foo = 4
+        expect(dummy).toBe(4)
+    })
 });
