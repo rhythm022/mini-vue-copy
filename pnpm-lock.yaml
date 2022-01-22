@@ -3,6 +3,7 @@ lockfileVersion: 5.3
 specifiers:
   '@babel/core': ^7.16.10
   '@babel/preset-env': ^7.16.11
+  '@babel/preset-typescript': ^7.16.7
   '@types/jest': ^27.4.0
   babel-jest: ^27.4.6
   jest: ^27.4.7
@@ -11,6 +12,7 @@ specifiers:
 devDependencies:
   '@babel/core': 7.16.10
   '@babel/preset-env': 7.16.11_@babel+core@7.16.10
+  '@babel/preset-typescript': 7.16.7_@babel+core@7.16.10
   '@types/jest': 27.4.0
   babel-jest: 27.4.6_@babel+core@7.16.10
   jest: 27.4.7
@@ -1010,6 +1012,20 @@ packages:
       '@babel/helper-plugin-utils': 7.16.7
     dev: true
 
+  /@babel/plugin-transform-typescript/7.16.8_@babel+core@7.16.10:
+    resolution: {integrity: sha512-bHdQ9k7YpBDO2d0NVfkj51DpQcvwIzIusJ7mEUaMlbZq3Kt/U47j24inXZHQ5MDiYpCs+oZiwnXyKedE8+q7AQ==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.16.10
+      '@babel/helper-create-class-features-plugin': 7.16.10_@babel+core@7.16.10
+      '@babel/helper-plugin-utils': 7.16.7
+      '@babel/plugin-syntax-typescript': 7.16.7_@babel+core@7.16.10
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
   /@babel/plugin-transform-unicode-escapes/7.16.7_@babel+core@7.16.10:
     resolution: {integrity: sha512-TAV5IGahIz3yZ9/Hfv35TV2xEm+kaBDaZQCn2S/hG9/CZ0DktxJv9eKfPc7yYCvOYR4JGx1h8C+jcSOvgaaI/Q==}
     engines: {node: '>=6.9.0'}
@@ -1127,6 +1143,20 @@ packages:
       '@babel/plugin-transform-dotall-regex': 7.16.7_@babel+core@7.16.10
       '@babel/types': 7.16.8
       esutils: 2.0.3
+    dev: true
+
+  /@babel/preset-typescript/7.16.7_@babel+core@7.16.10:
+    resolution: {integrity: sha512-WbVEmgXdIyvzB77AQjGBEyYPZx+8tTsO50XtfozQrkW8QB2rLJpH2lgx0TRw5EJrBxOZQ+wCcyPVQvS8tjEHpQ==}
+    engines: {node: '>=6.9.0'}
+    peerDependencies:
+      '@babel/core': ^7.0.0-0
+    dependencies:
+      '@babel/core': 7.16.10
+      '@babel/helper-plugin-utils': 7.16.7
+      '@babel/helper-validator-option': 7.16.7
+      '@babel/plugin-transform-typescript': 7.16.8_@babel+core@7.16.10
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /@babel/runtime/7.16.7:
