@@ -1,8 +1,13 @@
 import { track, trigger } from "./effect"
+import { ReactiveFlags } from "./reactive"
 
 function createGetter(isReadonly = false) {
     return function get(obj, key) {
         const res = Reflect.get(obj, key)
+
+        if( key === ReactiveFlags.IS_REACTIVE ){ // cool!! 在proxy里做实现
+            return !isReadonly
+        }
 
         if (!isReadonly) {
             track(obj, key)
