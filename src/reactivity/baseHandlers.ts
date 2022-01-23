@@ -1,5 +1,5 @@
 import { track, trigger } from "./effect"
-import { ReactiveFlags,reactive } from "./reactive"
+import { ReactiveFlags,reactive,readonly } from "./reactive"
 import { isObject } from '../../shared'
 
 function createGetter(isReadonly = false) {
@@ -22,7 +22,7 @@ function createGetter(isReadonly = false) {
         if(isObject(res)){
             // nested对象 成为了 reactive对象，意味着，该对象的属性可以在 effect fn 中收集 effect
             // 只有访问了某个子对象，这个对象才会被临时地reactive化了，每次返回的 reactive对象 都不是同一个
-            return reactive(res)// reactive raw[key]
+            return isReadonly ? readonly(res) : reactive(res)// reactive raw[key]
         }
         return res // 否则直接返回
     }
