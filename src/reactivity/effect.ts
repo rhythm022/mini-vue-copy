@@ -14,7 +14,9 @@ class ReactiveEffect{
     }
 
     run(){
-        this.isRunning = true
+        if(!this.isRunning){
+            return this._fn()
+        }
 
         enableTrack = true
         currentEffect = this
@@ -24,7 +26,7 @@ class ReactiveEffect{
         return res
     }
 
-    stop(){ // run 的反操作
+    stop(){ // stop 后响应式效果就消失了，就只能手动 run
         if(this.isRunning){
             clearUpEffect(this)
             if(this.onStop){

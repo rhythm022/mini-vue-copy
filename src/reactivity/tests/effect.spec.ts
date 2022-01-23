@@ -85,7 +85,7 @@ describe('effect', () => {
 
         // set
         obj.foo = 4
-        expect(dummy).toBe(4)
+        expect(dummy).toBe(3)
     })
 
     it('onStop',()=>{
