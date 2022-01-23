@@ -1,31 +1,44 @@
-import { track,trigger } from "./effect"
-// reactive只是个没有自身行为的代理
-export function reactive(raw){
-    return new Proxy(raw,{
-        // 拦截的是 某个对象的某个属性
-        get(obj,key){
-            const res = Reflect.get(obj,key)
+import { track, trigger } from "./effect"
 
-            // 收集 ReactiveEffect
-            track(obj,key)
-            return res
-        },
-        set(obj,key,value){
-            const res = Reflect.set(obj,key,value)
+function createGetter(isReadonly = false) {
+    return function get(obj, key) {
+        const res = Reflect.get(obj, key)
 
-            trigger(obj,key)
-            return res
+        if (!isReadonly) {
+            track(obj, key)
         }
-    })
+
+        return res
+    }
 }
 
-export function readonly(raw){
-    return new Proxy(raw,{
-        get(obj,key){// get 时不 track
-            return Reflect.get(obj,key)
-        },
-        set(obj,key,value){// 更不可 set
-            return true
-        }
-    })
+function createSetter() {
+    return function set(obj, key, value) {
+        const res = Reflect.set(obj, key, value)
+
+        trigger(obj, key)
+
+        return res
+    }
+}
+
+export function reactive(raw) {// effect为主，reactive是辅助性的提供hook
+    return new Proxy(raw, reactiveHandler)
+}
+
+
+export function readonly(raw) {// effect为主，reactive是辅助性的提供hook
+    return new Proxy(raw, readonlyHandler)
+}
+
+const reactiveHandler = {
+    get: createGetter(),
+    set: createSetter()
+}
+
+const readonlyHandler = {
+    get: createGetter(true),
+    set(obj, key, value) {
+        return true
+    }
 }
