@@ -39,6 +39,8 @@ function clearUpEffect(effect){
     effect.deps.forEach((dep:any)=>{
         dep.delete(effect)
     })
+
+    effect.deps.length = 0
 }
 
 // track某个对象的某个属性
@@ -56,8 +58,11 @@ export function track(obj,key){
         dep = new Set()
         keysMap.set(key,dep)
     }
-    dep.add(currentEffect)
-    currentEffect.deps.push(dep)
+
+    if(!dep.has(currentEffect)){
+        dep.add(currentEffect)
+        currentEffect.deps.push(dep)
+    }
 }
 
 export function trigger(obj,key) {
