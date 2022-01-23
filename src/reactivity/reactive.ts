@@ -1,7 +1,8 @@
 import {reactiveHandler,readonlyHandler} from './baseHandlers'
 
 export const enum ReactiveFlags{
-    IS_REACTIVE = '__v_isReactive'
+    IS_REACTIVE = '__v_isReactive',
+    IS_READONLY = '__v_isReadonly'
 }
 
 export function reactive(raw) {// effect为主，reactive是辅助性的提供hook
@@ -18,4 +19,8 @@ function createActiveObject(raw, handler){
 
 export function isReactive(obj){
     return !!obj[ReactiveFlags.IS_REACTIVE]
+}
+
+export function isReadonly(target){
+    return !!target[ReactiveFlags.IS_READONLY]
 }

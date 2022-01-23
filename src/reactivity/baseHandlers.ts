@@ -8,6 +8,9 @@ function createGetter(isReadonly = false) {
         if( key === ReactiveFlags.IS_REACTIVE ){ // cool!! 在proxy里做实现
             return !isReadonly
         }
+        if(key === ReactiveFlags.IS_READONLY){
+            return isReadonly
+        }
 
         if (!isReadonly) {
             track(obj, key)
