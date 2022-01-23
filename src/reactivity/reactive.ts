@@ -18,3 +18,14 @@ export function reactive(raw){
         }
     })
 }
+
+export function readonly(raw){
+    return new Proxy(raw,{
+        get(obj,key){// get 时不 track
+            return Reflect.get(obj,key)
+        },
+        set(obj,key,value){// 更不可 set
+            return true
+        }
+    })
+}
