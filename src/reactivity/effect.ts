@@ -2,7 +2,7 @@ import { extend } from '../../shared'
 const objMap = new Map()
 
 let currentEffect
-
+let enableTrack
 class ReactiveEffect{
     private _fn: any
     deps = []
@@ -16,9 +16,10 @@ class ReactiveEffect{
     run(){
         this.isRunning = true
 
+        enableTrack = true
         currentEffect = this
         const res = this._fn()
-        currentEffect = null
+        enableTrack = false
 
         return res
     }
@@ -43,7 +44,7 @@ function clearUpEffect(effect){
 // track某个对象的某个属性
 // currentEffect === 当前正在执行的 ReactiveEffect
 export function track(obj,key){
-    if(!currentEffect) return
+    if(!enableTrack) return
     let keysMap = objMap.get(obj)
     if(!keysMap){
         keysMap = new Map()
