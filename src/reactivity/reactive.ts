@@ -1,26 +1,4 @@
-import { track, trigger } from "./effect"
-
-function createGetter(isReadonly = false) {
-    return function get(obj, key) {
-        const res = Reflect.get(obj, key)
-
-        if (!isReadonly) {
-            track(obj, key)
-        }
-
-        return res
-    }
-}
-
-function createSetter() {
-    return function set(obj, key, value) {
-        const res = Reflect.set(obj, key, value)
-
-        trigger(obj, key)
-
-        return res
-    }
-}
+import {reactiveHandler,readonlyHandler} from './baseHandlers'
 
 export function reactive(raw) {// effect为主，reactive是辅助性的提供hook
     return createActiveObject(raw, reactiveHandler)
@@ -32,16 +10,4 @@ export function readonly(raw) {// effect为主，reactive是辅助性的提供ho
 
 function createActiveObject(raw, handler){
     return new Proxy(raw, handler)
-}
-
-const reactiveHandler = {
-    get: createGetter(),
-    set: createSetter()
-}
-
-const readonlyHandler = {
-    get: createGetter(true),
-    set(obj, key, value) {
-        return true
-    }
 }
