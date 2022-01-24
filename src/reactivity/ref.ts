@@ -3,6 +3,7 @@ import {hasChanged,isObject} from "../../shared";
 import {reactive} from "./reactive";
 
 class RefImp{
+    public __v_isRef = true
     private _rawValue: any;
     private _value: any;
     public dep
@@ -37,4 +38,32 @@ function convertToReactive(value){
 
 export function ref(value) {
     return new RefImp(value)
+}
+
+
+export function isRef(ref) {
+    return !!ref.__v_isRef
+}
+
+export function unRef(ref) {
+    return isRef(ref) ? ref.value : ref // ??应该拿 _rawValue
+}
+
+export function proxyRefs(objectWithRefs){
+    return new Proxy(objectWithRefs,{
+        get(target,key){
+            // 如果 get 的是 ref 则返回 ref.value ，否则正常 get
+            return unRef(Reflect.get(target,key))
+
+        },
+        set(target,key,value){
+            // 如果 set 的是 ref，则 ref.value = value ，否则正常 set
+            if(isRef(target[key]) && !isRef(value)){
+                return (target[key].value = value)
+            }
+
+            return Reflect.set(target,key,value)
+
+        },
+    })
 }
