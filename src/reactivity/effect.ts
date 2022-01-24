@@ -3,13 +3,12 @@ const objMap = new Map()
 
 let currentEffect
 let enableTrack
-class ReactiveEffect{
+export class ReactiveEffect{
     private _fn: any
     deps = []
     isRunning = true
     onStop?: () => void
-    scheduler?
-    constructor(fn){
+    constructor(fn,public scheduler?){
         this._fn = fn
     }
 
@@ -91,7 +90,7 @@ export function triggerEffects(dep){
 }
 // effect函数的职责是调用fn，并在这个过程中让fn中每个响应式对象的每个属性都拥有 ReactiveEffect 对象
 export function effect(fn,options:any = {}){
-    const reactiveEffect = new ReactiveEffect(fn)
+    const reactiveEffect = new ReactiveEffect(fn,options.scheduler)
     extend(reactiveEffect,options)
     reactiveEffect.run()
 
