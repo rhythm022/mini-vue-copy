@@ -1,8 +1,8 @@
 import { track, trigger } from "./effect"
 import { ReactiveFlags,reactive,readonly } from "./reactive"
-import { isObject } from '../../shared'
+import { isObject,extend } from '../../shared'
 
-function createGetter(isReadonly = false) {
+function createGetter(isReadonly = false,isShallow = false) {
     // 被 get 的属性，就能去收集 effect
     return function get(raw, key) {
         const res = Reflect.get(raw, key)
@@ -12,6 +12,10 @@ function createGetter(isReadonly = false) {
         }
         if(key === ReactiveFlags.IS_READONLY){
             return isReadonly
+        }
+
+        if(isShallow && isReadonly){
+            return res
         }
 
         if (!isReadonly) {
@@ -41,6 +45,8 @@ function createSetter() {
 const get = createGetter()
 const set = createSetter()
 const readonlyGet = createGetter(true)
+const shallowReadonlyGet = createGetter(true,true)
+
 
 export const reactiveHandler = {
     get,
@@ -55,3 +61,9 @@ export const readonlyHandler = {
         return true
     }
 }
+
+
+export const shallowReadonlyHandler =extend({},readonlyHandler,{
+    get: shallowReadonlyGet,
+
+})
