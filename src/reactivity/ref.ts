@@ -1,4 +1,6 @@
 import {trackEffects,triggerEffects} from './effect'
+import {hasChanged} from "../../shared";
+
 class RefImp{
     private _value: any;
     public dep
@@ -16,7 +18,7 @@ class RefImp{
     }
 
     set value(value){
-        if(Object.is(value,this._value)) return
+        if(!hasChanged(value,this._value))return
 
         this._value = value
 
